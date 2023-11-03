@@ -2,17 +2,31 @@ const ProductService = require("../services/ProductService");
 
 const createProduct = async (req, res) => {
   try {
-    const { name, image, type, price, countInStock, rating, description } =
-      req.body;
-
-    if (!name || !image || !type || !price || !countInStock || !rating) {
+    const {
+      name,
+      image,
+      type,
+      countInStock,
+      price,
+      rating,
+      description,
+      discount,
+    } = req.body;
+    if (
+      !name ||
+      !image ||
+      !type ||
+      !countInStock ||
+      !price ||
+      !rating ||
+      !discount
+    ) {
       return res.status(200).json({
         status: "ERR",
-        message: "the input is required.",
+        message: "The input is required",
       });
     }
-    console.log("response", req.body);
-    const response = await ProductService.creatProduct(req.body);
+    const response = await ProductService.createProduct(req.body);
     return res.status(200).json(response);
   } catch (e) {
     return res.status(404).json({
@@ -28,7 +42,7 @@ const updateProduct = async (req, res) => {
     if (!productId) {
       return res.status(200).json({
         status: "ERR",
-        message: "the productId isrequired.",
+        message: "The productId is required",
       });
     }
     const response = await ProductService.updateProduct(productId, data);
@@ -43,11 +57,10 @@ const updateProduct = async (req, res) => {
 const getDetailsProduct = async (req, res) => {
   try {
     const productId = req.params.id;
-
     if (!productId) {
       return res.status(200).json({
         status: "ERR",
-        message: "the user isrequired.",
+        message: "The productId is required",
       });
     }
     const response = await ProductService.getDetailsProduct(productId);

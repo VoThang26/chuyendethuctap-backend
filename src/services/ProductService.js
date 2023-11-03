@@ -1,16 +1,24 @@
 const Product = require("../models/ProductModel");
 
-const creatProduct = (newProduct) => {
+const createProduct = (newProduct) => {
   return new Promise(async (resolve, reject) => {
-    const { name, image, type, price, countInStock, rating, description } =
-      newProduct;
+    const {
+      name,
+      image,
+      type,
+      countInStock,
+      price,
+      rating,
+      description,
+      discount,
+    } = newProduct;
     try {
       const checkProduct = await Product.findOne({
         name: name,
       });
       if (checkProduct !== null) {
         resolve({
-          status: "OK",
+          status: "ERR",
           message: "The name of product is already",
         });
       }
@@ -18,10 +26,11 @@ const creatProduct = (newProduct) => {
         name,
         image,
         type,
+        countInStock: Number(countInStock),
         price,
-        countInStock,
         rating,
         description,
+        discount: Number(discount),
       });
       if (newProduct) {
         resolve({
@@ -151,6 +160,19 @@ const getAllProduct = (limit, page, sort, filter) => {
           .skip(page * limit)
           .sort({ createdAt: -1, updatedAt: -1 });
       }
+
+      if (!limit) {
+        allProduct = await Product.find().sort({
+          createdAt: -1,
+          updatedAt: -1,
+        });
+      } else {
+        allProduct = await Product.find()
+          .limit(limit)
+          .skip(page * limit)
+          .sort({ createdAt: -1, updatedAt: -1 });
+      }
+
       resolve({
         status: "OK",
         message: "Success",
@@ -205,7 +227,7 @@ const getAllType = () => {
 };
 
 module.exports = {
-  creatProduct,
+  createProduct,
   updateProduct,
   getDetailsProduct,
   deleteProduct,
